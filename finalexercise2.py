@@ -10,42 +10,44 @@ Created on Tue Oct  7 19:13:27 2025
 import tkinter as tk
 import random
 
-# Function to load jokes from the text file
+# In this Function, it will try to load jokes from the text file
 def load_jokes():
     try:
         # Open the text file and read each line
         with open("/Users/lavignejoicee/Downloads/randomJokes.txt", "r") as file:
             jokes = [line.strip() for line in file.readlines() if "?" in line]
-        return jokes  # Return list of jokes
+        return jokes  """ It tries ro open the file and it will allow to 
+        read each line and keeps only a joke that has a "?" so it will know where to split setup and puncline"""
     except FileNotFoundError:
-        # Show a default message if file not found
+        #If the file does not exists, the it will allow the code it return on a default joke instead of crashing
         return ["Why can't I tell a joke?Because the joke file is missing."]
 
 # Function to show the setup part of the joke
-def tell_joke():
+def tell_joke(): #This function will allow to pick and shows only the first part of the joke 
     global current_joke  # Make it accessible to other functions
     # Pick a random joke from the list
-    current_joke = random.choice(jokes)
+    current_joke = random.choice(jokes) #This will make a current joke as a variable to other functions can use it 
     # Split setup and punchline using '?'
-    parts = current_joke.split("?")
+    parts = current_joke.split("?") #This will split the joke into two parts which are the setup and puncline that was based on ?
     setup_label.config(text=parts[0] + "?")  # Show setup only
     punchline_label.config(text="")  # Clear previous punchline
     show_btn.config(state="normal")  # Enable punchline button
     ask_btn.config(state="disabled")  # Disable ask button for now
 
 # Function to show the punchline of the current joke
-def show_punchline():
+def show_punchline(): #This function reveals the punchline 
     # Split again to get punchline part
-    parts = current_joke.split("?")
+    parts = current_joke.split("?") #it will show the second part of the punchline
     # Display the punchline
-    punchline_label.config(text=parts[1])
+    punchline_label.config(text=parts[1]) 
     show_btn.config(state="disabled")  # Disable punchline button
     ask_btn.config(state="normal")  # Enable ask button again
+    #This will enable to ask the joke but wont be able to click the puncline again 
 
 # Function to process user input from the entry box
-def process_command():
+def process_command(): #This will check on what the user has typed in the box 
     # Get what the user typed and remove extra spaces
-    user_input = entry.get().strip().lower()
+    user_input = entry.get().strip().lower() #If you type the phrase correctly then alexa will give a joke
     if user_input == "alexa tell me a joke":
         tell_joke()  # If correct phrase, show a joke
     else:
@@ -54,18 +56,18 @@ def process_command():
         punchline_label.config(text="")
 
 # Function to close the program
-def quit_app():
+def quit_app(): #This will allow to close the window when you click on quit 
     window.destroy()
 
 # Create the main GUI window
-window = tk.Tk()
+window = tk.Tk() #it creates the main window and gives a title size anf the background
 window.title("Alexa Joke Teller")  # Set title of the window
 window.geometry("400x300")  # Set window size
 window.config(bg="lightblue")  # Set background color
 
 # Load jokes when program starts
-jokes = load_jokes()
-current_joke = ""
+jokes = load_jokes() 
+current_joke = "" #This will allow to load jokes once at start and prepares a variable to the store the currernt one
 
 # Label for program title
 title_label = tk.Label(window, text="Alexa Joke Teller", font=("Arial", 16, "bold"), bg="lightblue")
