@@ -14,55 +14,55 @@ import tkinter as tk                     # main tkinter module for GUI
 from tkinter import messagebox, simpledialog  # dialogs for input and messages
 import os                                  # to check file existence
 
-# ---------- Helper functions for data handling ----------
 
+#This is a helper function inorder to load and read the student file 
 def load_students(filename="/Users/lavignejoicee/Desktop/advanced programming/studentMarks.txt"):
     """Load student data from file into a list of dicts."""
    
-    students = []
-    if not os.path.exists(filename):
+    students = [] #We start with an empty list to store all the students name 
+    if not os.path.exists(filename): #If the file is missing, then show an error message and will return an empty list 
         messagebox.showerror("File error", f"Cannot find {filename}")
         return students
-    with open(filename, "r", encoding="utf-8") as f:
+    with open(filename, "r", encoding="utf-8") as f: #It will open the file and read all non empty lines 
         lines = [ln.strip() for ln in f if ln.strip()]
-    if not lines:
+    if not lines: #Open all the files and real all the non empty lines 
         return students
     # First line is count (we trust but do not require it)
-    try:
+    try: #If the first line might be a count of students. if its a number, ignore it , if not treat all lines as student data 
         _ = int(lines[0])  # read but ignore
         data_lines = lines[1:]
     except ValueError:
         # If first line is not an integer, assume all lines are data
         data_lines = lines
     for ln in data_lines:
-        parts = [p.strip() for p in ln.split(",")]
+        parts = [p.strip() for p in ln.split(",")] #It will allow to split each line by commas into ID,Name, marks, etc.
         if len(parts) < 6:
-            continue  # skip malformed lines
-        sid = parts[0]
+            continue  
+        sid = parts[0] 
         name = parts[1]
         try:
             cw1, cw2, cw3 = int(parts[2]), int(parts[3]), int(parts[4])
-            exam = int(parts[5])
+            exam = int(parts[5]) #It will skip the line if its not complete 
         except ValueError:
             continue  # skip if marks not integers
-        students.append({
-            "id": sid,
+        students.append({ #It will convert the coursework and exam marks into the numbers 
+            "id": sid, #It will store each student as a dictionary inside the list 
             "name": name,
             "cw": [cw1, cw2, cw3],
             "exam": exam
         })
-    return students
+    return students 
 
-def overall_percentage(student):
+def overall_percentage(student): #This will calculate the coursework and exam to compute the percentage out of 160 
     """Calculate overall percentage out of 160 marks."""
     cw_total = sum(student["cw"])            # coursework total out of 60
     exam = student["exam"]                   # exam out of 100
     overall = (cw_total + exam) / 160 * 100  # percentage
-    return overall
+    return overall 
 
-def grade_from_percent(pct):
+def grade_from_percent(pct): #It uses "IF" condition to return A,B,C,D,or F
     """Convert percentage to letter grade."""
-    if pct >= 70:
+    if pct >= 70: 
         return "A"
     if pct >= 60:
         return "B"
@@ -72,7 +72,7 @@ def grade_from_percent(pct):
         return "D"
     return "F"
 
-def format_student_block(student):
+def format_student_block(student): #It creates a format text showing the student details
     """Return a nicely formatted block string for one student."""
     cw_total = sum(student["cw"])
     exam = student["exam"]
@@ -94,8 +94,11 @@ def format_student_block(student):
 
 def view_all():
     """Show all student records and summary (count and average)."""
+    """Clears the text box and prints all formatted student blocks that also shows
+    count and class average"""
+    
     if not students:
-        text_display.delete("1.0", tk.END)
+        text_display.delete("1.0", tk.END) 
         text_display.insert(tk.END, "No student data loaded.\n")
         return
     text_display.delete("1.0", tk.END)
@@ -107,7 +110,9 @@ def view_all():
     summary = f"\nNumber of students: {count}\nClass average: {avg:.2f}%\n"
     text_display.insert(tk.END, summary)
 
-def view_individual():
+def view_individual(): #It uses a pop-up to ask for input 
+                        #It will find the exact match or partial name match 
+                        #Shows student info or not found 
     """Prompt user to enter name or ID and show that student's record."""
     if not students:
         messagebox.showinfo("Info", "No data loaded.")
@@ -134,7 +139,7 @@ def view_individual():
     else:
         text_display.insert(tk.END, f"No student found for '{query}'.\n")
 
-def show_highest():
+def show_highest(): #This will find the highest percentage 
     """Find and display student with highest overall percentage."""
     if not students:
         messagebox.showinfo("Info", "No data loaded.")
@@ -144,7 +149,7 @@ def show_highest():
     text_display.insert(tk.END, "Student with highest overall mark:\n")
     text_display.insert(tk.END, format_student_block(best))
 
-def show_lowest():
+def show_lowest(): #It find students the min percentage 
     """Find and display student with lowest overall percentage."""
     if not students:
         messagebox.showinfo("Info", "No data loaded.")
@@ -154,7 +159,8 @@ def show_lowest():
     text_display.insert(tk.END, "Student with lowest overall mark:\n")
     text_display.insert(tk.END, format_student_block(worst))
 
-def reload_data():
+def reload_data(): #It will reload the file in case it was updated 
+                    
     """Reload student data from file (in case file changed)."""
     global students
     students = load_students()
@@ -167,7 +173,7 @@ def quit_app():
 # ---------- Build the GUI ----------
 
 # main window
-window = tk.Tk()
+window = tk.Tk() #Creates window and size
 window.title("Student Marks Manager")
 window.geometry("600x500")
 
